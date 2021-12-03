@@ -28,31 +28,35 @@ c02_scrubber_rating = 0 # least common, if equal pick 0
 most_frequent_remaining = input_matrix[:]
 least_frequent_remaining = input_matrix[:]
 for index in range(num_columns):
-    # oxygen
-    column = get_column(most_frequent_remaining, index)
-    most_frequent = multimode(column)
-    match most_frequent:
-        case [_, _]:
-            most_frequent_remaining = [row for row in most_frequent_remaining if row[index] == '1']
-            
-        case [(x, _)]:
-            most_frequent_remaining = [row for row in most_frequent_remaining if row[index] == x]
 
-    if len(most_frequent_remaining) == 1:
-        oxygen_generator_rating = int(''.join(most_frequent_remaining.pop()), 2)
+    # oxygen
+    if not len(most_frequent_remaining) == 1:
+        column = get_column(most_frequent_remaining, index)
+        most_frequent = multimode(column)
+        match most_frequent:
+            case [_, _]:
+                most_frequent_remaining = [row for row in most_frequent_remaining if row[index] == '1']
+                
+            case [(x, _)]:
+                most_frequent_remaining = [row for row in most_frequent_remaining if row[index] == x]
+
+        if len(most_frequent_remaining) == 1:
+            oxygen_generator_rating = int(''.join(most_frequent_remaining[0]), 2)
 
     #c02
-    column = get_column(least_frequent_remaining, index)
-    least_frequent = multimode(column)
-    match least_frequent:
-        case [_, _]:
-            least_frequent_remaining = [row for row in least_frequent_remaining if row[index] == '0']
-            
-        case [(x, _)]:
-            least_frequent_remaining = [row for row in least_frequent_remaining if row[index] == x]
+    if not len(least_frequent_remaining) == 1:
+        column = get_column(least_frequent_remaining, index)
+        print(len(least_frequent_remaining))
+        least_frequent = multimode(column, reverse=True)
+        match least_frequent:
+            case [_, _]:
+                least_frequent_remaining = [row for row in least_frequent_remaining if row[index] == '0']
+                
+            case [(x, _)]:
+                least_frequent_remaining = [row for row in least_frequent_remaining if row[index] == x]
 
-    if len(least_frequent_remaining) == 1:
-        c02_scrubber_rating = int(''.join(least_frequent_remaining.pop()), 2)
+        if len(least_frequent_remaining) == 1:
+            c02_scrubber_rating = int(''.join(least_frequent_remaining[0]), 2)
 
 print(oxygen_generator_rating)
 print(c02_scrubber_rating)
