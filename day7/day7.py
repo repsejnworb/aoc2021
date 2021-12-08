@@ -1,7 +1,24 @@
 import argparse
 
+
+def brute_force(positions):
+    lead = 1000000000
+    def get_efficiency(position, destinations):
+        return sum([abs(position - destination) for destination in destinations])
+    for position in set(positions):
+        efficiency = get_efficiency(position, positions)
+        if efficiency < lead:
+            lead = efficiency
+    return lead
+
+
 def solve_puzzle(input_data, args):
-    return "Not solved"
+    def prepare_data(data):
+        return [int(x) for x in data.strip().split(',')]
+
+    positions = prepare_data(input_data)
+    return brute_force(positions)
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -13,11 +30,7 @@ def main():
     with open(f"./{args.inputfile}", 'r') as fio:
         input_data = fio.read()
 
-    print(solve_puzzle(input_data, args))
-
-    if args.debug:
-        import code
-        code.interact(local=dict(globals(), **locals()))
+    print(f"Answer is: {solve_puzzle(input_data, args)}")
 
 if __name__ == "__main__":
     main()
