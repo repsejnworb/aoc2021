@@ -95,13 +95,15 @@ def main():
     with open(f"./{args.inputfile}", 'r') as fio:
         lines = parse_data(fio.read())
     
-    filtered_lines = list(filterfalse(is_diagonal, lines))
+    if args.part2:
+        # no diagonal filtering
+        filtered_lines = lines
+    else:
+        filtered_lines = list(filterfalse(is_diagonal, lines))
 
     all_points = []
     for line in filtered_lines:
         all_points += line.points()
-
-    
 
     points_counter = Counter(all_points)
     overlapping_counter = Counter(filter(lambda x: x > 1, points_counter.values()))
