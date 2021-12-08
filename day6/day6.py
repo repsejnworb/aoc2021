@@ -1,5 +1,5 @@
 import argparse
-
+from collections import Counter
 
 def tick(fishes):
     spawned = []
@@ -12,6 +12,19 @@ def tick(fishes):
     fishes.extend(spawned)
 
 
+
+def new_counter():
+    states = range(9)
+    counter = Counter(states)
+    counter.subtract(states)
+    return counter
+
+def create_tracker(range):
+    tracker = {}
+    for i in range:
+        tracker[i] = 0
+    return tracker
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("inputfile")
@@ -22,19 +35,25 @@ def main():
 
     with open(f"./{args.inputfile}", 'r') as fio:
         # prepare data
-        data = fio.read().strip()
-        fishes = [int(x) for x in data.split(',')]
+        input_data = fio.read().strip()
+        input_data = [int(x) for x in input_data.split(',')]
+
+    # setup zeroed counters for each possible state
+    fishes = new_counter()
+
+    # handle input
+    fishes.update(input_data)
 
     print(f"Simulating {args.days} days")
     for day in range(1, args.days + 1):
-        tick(fishes)
+        to_spawn = fishes[0]
+        state = new_counter()
+        for key, value in fishes.items():
+            if key == 0:
+                state[6] += value
 
-        if args.debug:
-            print(fishes)
-            print(f"Done simulating {day}, num fishes: {len(fishes)}")
-            print()
+            state[key] += value
 
-    print(f"Finished simulation! There are now {len(fishes)}")
 
     if args.debug:
         import code
