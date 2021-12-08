@@ -3,14 +3,16 @@ import argparse
 
 def get_efficiency(position, destinations, move_penalty):
     if move_penalty:
-        return(666)
+        def apply_decay(distance):
+            return distance * (distance + 1) / 2
+        return sum([apply_decay(abs(position - destination)) for destination in destinations])
     else:
         return sum([abs(position - destination) for destination in destinations])
 
 
 def brute_force(positions, move_penalty):
     lead = 1000000000
-    for position in set(positions):
+    for position in range(max(positions) + 1):
         efficiency = get_efficiency(position, positions, move_penalty)
         if efficiency < lead:
             lead = efficiency
