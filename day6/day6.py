@@ -13,31 +13,17 @@ def tick(fishes):
 
 
 
-def new_counter():
-    states = range(9)
-    counter = Counter(states)
-    counter.subtract(states)
-    return counter
+""" 
+Idea? 
+Just count with a list instead. 
+Index is the state (0-8), and value is number of fishes in that state.
+Then to get a tick update you pop(0) to remove all zeroes and shift
+the numbers in one go.
+Then add the value that got popped to index(6) and make a new element
+of the value at the end of the list (index(8))
+"""
 
-def create_tracker(range):
-    tracker = {}
-    for i in range:
-        tracker[i] = 0
-    return tracker
-
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("inputfile")
-    parser.add_argument("--part2", action="store_true")
-    parser.add_argument("--debug", action="store_true")
-    parser.add_argument('--days', type=int, default=80)
-    args = parser.parse_args()
-
-    with open(f"./{args.inputfile}", 'r') as fio:
-        # prepare data
-        input_data = fio.read().strip()
-        input_data = [int(x) for x in input_data.split(',')]
-
+def old_solution():
     # setup zeroed counters for each possible state
     fishes = new_counter()
 
@@ -54,6 +40,35 @@ def main():
 
             state[key] += value
 
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("inputfile")
+    parser.add_argument("--part2", action="store_true")
+    parser.add_argument("--debug", action="store_true")
+    parser.add_argument('--days', type=int, default=80)
+    args = parser.parse_args()
+
+    with open(f"./{args.inputfile}", 'r') as fio:
+        # prepare data
+        input_data = fio.read().strip()
+        input_data = [int(x) for x in input_data.split(',')]
+
+
+    def setup_tracker(input_data):
+        states = range(9)
+        tracker = Counter(states)
+        tracker.subtract(states)
+        tracker.update(input_data)
+        return [x[1] for x in sorted(tracker.items())]
+
+    tracker = setup_tracker(input_data)
+
+    for day in range(args.days):
+        num_finished = tracker.pop(0)
+        tracker[6] += num_finished
+        tracker.append(num_finished)
+
+    print(f"Number of fishes after {args.days}: {sum(tracker)}")
 
     if args.debug:
         import code
