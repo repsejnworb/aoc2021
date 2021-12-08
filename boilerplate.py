@@ -1,5 +1,8 @@
 import argparse
 
+def solve_puzzle(input_data, args):
+    return "Not solved"
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("inputfile")
@@ -8,8 +11,9 @@ def main():
     args = parser.parse_args()
 
     with open(f"./{args.inputfile}", 'r') as fio:
-        input_lines = fio.read().splitlines()
-    print(input_lines)
+        input_data = fio.read()
+
+    print(solve_puzzle(input_data, args))
 
     if args.debug:
         import code
