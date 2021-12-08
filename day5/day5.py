@@ -1,4 +1,5 @@
 import argparse
+from collections import Counter
 from dataclasses import dataclass, field, fields, astuple
 from itertools import filterfalse
 import math
@@ -88,6 +89,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("inputfile")
     parser.add_argument("--part2", action="store_true")
+    parser.add_argument("--debug", action="store_true")
     args = parser.parse_args()
 
     with open(f"./{args.inputfile}", 'r') as fio:
@@ -95,12 +97,23 @@ def main():
     
     filtered_lines = list(filterfalse(is_diagonal, lines))
 
+    all_points = []
+    for line in filtered_lines:
+        all_points += line.points()
+
+    
+
+    points_counter = Counter(all_points)
+    overlapping_counter = Counter(filter(lambda x: x > 1, points_counter.values()))
+    print(sum(overlapping_counter.values()))
+
     ### DEBUG STUFF
     kiss = lines[-1]
     s = kiss.start
     e = kiss.end
-    import code
-    code.interact(local=dict(globals(), **locals()))
+    if args.debug:
+        import code
+        code.interact(local=dict(globals(), **locals()))
     ### DEBUG STUFF
 
 
