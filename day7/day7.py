@@ -28,21 +28,23 @@ def solve_puzzle(input_data, args):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--test", action="store_true")
+    parser.add_argument("--sample", action="store_true")
     parser.add_argument("--part2", action="store_true")
     parser.add_argument("--debug", action="store_true")
     args = parser.parse_args()
 
-    input_file = "sample.txt" if args.test else "input.txt"
+    sample_answer = 168 if args.part2 else 37
+    known_answer = 97164301 if args.part2 else 344297
+
+    input_file, expected_answer = ("sample.txt", sample_answer) if args.sample else ("input.txt", known_answer)
+    print(f"Running configuration {input_file} expecting answer {expected_answer}")
     with open(f"./{input_file}", 'r') as fio:
         input_data = fio.read()
 
     answer = solve_puzzle(input_data, args)
 
-    if args.test:
-        sample_answer = 168 if args.part2 else 37
-        if answer != sample_answer:
-            raise AssertionError(f"{answer} is not equal to {sample_answer}")
+    if expected_answer and answer != expected_answer:
+        raise AssertionError(f"{answer} is not equal to {expected_answer}")
 
     print(f"Answer is: {answer}")
 
