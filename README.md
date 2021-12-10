@@ -5,5 +5,5 @@ Some solutions require python3.10
 
 Run:
 ```
-$ python3.10 ./solve.py <day>
+$ python3.10 <day>/solution.py
 ```
