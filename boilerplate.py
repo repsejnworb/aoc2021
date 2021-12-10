@@ -20,7 +20,7 @@ def solve_puzzle(data, part2=False):
     return answer
 
 
-def BOILERPLATE():
+def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--sample", action="store_true")
     parser.add_argument("--part2", action="store_true")
@@ -43,4 +43,4 @@ def BOILERPLATE():
     print(f"Answer is: {answer}")
 
 if __name__ == "__main__":
-    BOILERPLATE()
+    main()
