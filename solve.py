@@ -40,7 +40,16 @@ def verify_implemented(solution):
 
     #signature = inspect.signature()
 
-    
+
+def get_file_paths(input_location):
+    paths = {
+        "directory": Path(input_location),
+        "solution": Path(input_location) / "solution.py",
+        "puzzle_input": Path(input_location) / "puzzle_input.txt",
+        "sample_input": Path(input_location) / "sample_input.txt",
+    }
+    return paths
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -50,22 +59,25 @@ def main():
     parser.add_argument("--debug", action="store_true")
     args = parser.parse_args()
 
-    solution_location = Path(args.solution_location)
-    puzzle_input_path = solution_location / "input.txt"
-    sample_input_path = solution_location / "sample.txt"
+    paths = get_file_paths(args.solution_location)
+    if missing_files := list(filterfalse(lambda p: p.exists(), paths.values())):
+        for missing in missing_files:
+            print(f"Couldn't find required file: {missing}")
+        sys.exit(1)
 
-    print(solution_location.exists())
-
-
-    # UNDER CONSTRUCTION
-    return
+    solution_folder = Path(args.solution_location)
+    puzzle_input_path = solution_folder / "input.txt"
+    sample_input_path = solution_folder / "sample.txt"
 
     try:
         #solution = importlib.import_module(args.day)
-        solution = SourceFileLoader()
+        solution = SourceFileLoader("kiss", str(solution_location))
+        print(solution.is_package("kiss"))
     except ModuleNotFoundError as e:
         print(f"Couldn't find a solution named '{args.day}''")
         sys.exit(1)
+
+    breakpoint()
 
     implemented, result = verify_implemented(solution)
     breakpoint()
