@@ -1,43 +1,8 @@
 import argparse
 from importlib.machinery import SourceFileLoader
-import inspect
 from itertools import filterfalse
 import sys
 from pathlib import Path
-
-
-SOLUTION_INTERFACE = {
-    "variables": [
-        "SAMPLE_PART1",
-        "SAMPLE_PART2",
-        "SOLVED_PART1",
-        "SOLVED_PART2",
-    ],
-    "functions": [
-        {
-            "name": "solve_puzzle",
-            "args": ["data", "part2"]
-        }
-    ]
-}
-
-
-def verify_implemented(solution):
-    """ Verifies that a solution file implements expected variables
-    and functions. """
-    result = {}
-    for variable in SOLUTION_INTERFACE["variables"]:
-        result[variable] = hasattr(solution, variable)
-
-    for function in SOLUTION_INTERFACE["functions"]:
-        result[function["name"]] = hasattr(solution, function["name"])
-        if result[function["name"]]:
-            parameters = inspect.signature(getattr(solution, function["name"])).parameters
-            for arg in function["args"]:
-                result[f'{function["name"]}.{arg}'] = arg in parameters.keys()
-
-    implemented = any(result.values())
-    return implemented, result
 
 
 def get_file_paths(input_location):
@@ -72,14 +37,6 @@ def main():
         print(f"Couldn't find a solution named '{args.day}''")
         sys.exit(1)
 
-    implemented, result = verify_implemented(solution)
-    if not implemented:
-        print(f"Solution '{solution}' has not implemented:")
-        for expected_attr, _ in filterfalse(lambda r: r[1], result.items()):
-            print(end=" * ")
-            print(f"'{expected_attr}' not implemented.")
-        sys.exit(1)
-
     sample_answer = solution.SAMPLE_PART1 if args.part2 else solution.SAMPLE_PART2
     known_answer = solution.SOLVED_PART2 if args.part2 else solution.SOLVED_PART2
 
@@ -93,6 +50,7 @@ def main():
     if expected_answer and answer != expected_answer:
         raise AssertionError(f"{answer} is not equal to {expected_answer}")
     print(f"Answer is: {answer}")
+    return solution # fixme remove
 
 if __name__ == "__main__":
-    main()
+    solution = main()
