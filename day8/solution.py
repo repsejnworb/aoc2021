@@ -221,9 +221,11 @@ def part2(input: str):
         pattern_groups = [list(g) for k, g in itertools.groupby(signal_patterns, key=len)]
 
         # 1 is free in the first group.
+        # FIXME FIXME THIS FUCKING ORDER ISNT FREE YE STOPID STOPID PERSON
         digit_1_pattern = pattern_groups[0][0]
-        configuration[3] = digit_1_pattern[0]
-        configuration[6] = digit_1_pattern[1]
+        #configuration[3] = digit_1_pattern[0]
+        #configuration[6] = digit_1_pattern[1]
+        configuration["BASE"] = digit_1_pattern
         
         # 7 is also nearly free in second group, minus digit_1_pattern
         # or rather, what is already stored in our configuration.
@@ -274,8 +276,22 @@ def part2(input: str):
                 configuration[2] = stripped
                 configuration[4] = strip(contestants, stripped)
 
-        # import code
-        # code.interact(local=locals())
+        # I lied above.. The group of len(6) is also the group where we can figure out the 
+        # true order of the first pattern, segment 3 and 6.
+        # The pattern that contains only one of them is the pattern for digit 6, which will
+        # help us pinpoint segment 6. How romantic!
+        # fml this code.. xD
+        contestants = configuration["BASE"]
+        del configuration["BASE"]
+        for pattern in pattern_groups[4]:
+            stripped = strip(pattern, letters(configuration))
+            if len(stripped) == 1:
+                # WINNER!
+                configuration[6] = stripped
+                configuration[3] = strip(contestants, stripped)
+
+        #import code
+        #code.interact(local=locals())
 
         print(digit_map)
         print(configuration)
