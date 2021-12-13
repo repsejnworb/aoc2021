@@ -269,47 +269,6 @@ def part2(input: str):
                         print("######222222222222##########################################")
                         print("BAAAAAAAAAAAAAAAD TIMES MATE")
 
-        # for pattern in signal_patterns:
-        #     match len(pattern):
-        #         case 2:
-        #             configuration[3] = pattern[0]
-        #             configuration[6] = pattern[1]
-        #             digit_map[1] = pattern
-        #         case 3:
-        #             print(f"CASE3 PATTERN: {pattern} and stripping: {configuration}")
-        #             configuration[1] = strip(pattern, letters(configuration))
-        #             digit_map[7] = pattern
-        #         case 4:
-        #             # Can't know for sure where in the config this goes yet.
-        #             # But storing it for reference for upcoming cases
-        #             print(f"CASE4 PATTERN: {pattern} and stripping: {configuration}")
-        #             stripped = strip(pattern, letters(configuration))
-        #             korvdict["kroken"] = stripped
-        #             configuration[2] = stripped[0]
-        #             configuration[4] = stripped[1]
-        #             print(korvdict["kroken"])
-        #             digit_map[4] = pattern
-        #         case 5:
-        #             print(f"CASE5 PATTERN: {pattern} and stripping: {configuration}")
-        #             stripped = strip(pattern, letters(configuration))
-        #             print(stripped)
-        #             if configuration[7] is None:
-        #                 if len(stripped) == 1:
-        #                     configuration[7] = stripped
-        #                 else:
-        #                     print(f"LEN: {len(stripped)} and stripped: {stripped}")
-        #                     print("####1111111############################################")
-        #                     print("BAAAAAAAAAAAAAAAD TIMES MATE")
-        #             else:
-        #                 if len(stripped) == 1:
-        #                     configuration[5] = strip(stripped, letters(configuration))
-        #                 elif len(stripped) == 0:
-        #                     # previous go around already sorted 5
-        #                     pass
-        #                 else:
-        #                     print(f"LEN: {len(stripped)} and stripped: {stripped}")
-        #                     print("######222222222222##########################################")
-        #                     print("BAAAAAAAAAAAAAAAD TIMES MATE")
 
         print(digit_map)
         print(configuration)
