@@ -38,6 +38,33 @@ DIGIT_MAP = {
 }
 
 
+class SevenSegmentDisplay:
+    def __init__(self):
+        # q == None
+        self.segment1 = "q"
+        self.segment2 = "q"
+        self.segment3 = "q"
+        self.segment4 = "q"
+        self.segment5 = "q"
+        self.segment6 = "q"
+        self.segment7 = "q"
+
+    def is_complete(self):
+        """ Returns True if all segments has been set, 
+        which means they are no longer of value 'q' """
+        return all([getattr(self, f"segment{i}") != 'q' for i in range(1, 8)])
+
+    def __str__(self):
+        empty = " "
+        return f" {self.segment1 * 4} \n" \
+                f"{self.segment2}{empty * 4}{self.segment3}\n" \
+                f"{self.segment2}{empty * 4}{self.segment3}\n" \
+                f" {self.segment4 * 4} \n" \
+                f"{self.segment5}{empty * 4}{self.segment6}\n" \
+                f"{self.segment5}{empty * 4}{self.segment6}\n" \
+                f" {self.segment7 * 4} " \
+
+
 def lookup_unique_digit(code: str):
     matches = [k for k,v in DIGIT_MAP.items() if len(v) == len(code)]
     if len(matches) > 1:
@@ -46,7 +73,7 @@ def lookup_unique_digit(code: str):
         return matches[0]
 
 
-def solve_puzzle(input: str):
+def part1(input: str):
     lines = input.splitlines()
     digits = []
     for line in lines:
@@ -55,14 +82,28 @@ def solve_puzzle(input: str):
             digit = lookup_unique_digit(code)
             if digit is not None:
                 digits.append(digit)
-    print(digits)
     return len(digits)
+
+
+def part2(input: str):
+    lines = input.splitlines()
+    digits = []
+    for line in lines:
+        signal_patterns, digit_output = [v.split() for v in line.split('|')]
+        # find the code for '8'
+        config_code = [code for code in itertools.chain(signal_patterns, digit_output) if len(code) == 8][0]
+        print(config_code)
+        break
+
+    return "NotSolved"
 
 
 def main():
     puzzle_input_path = pathlib.Path(__file__).parent.resolve() / "input.txt"
     with puzzle_input_path.open() as fio:
-        print(f"Answer is: {solve_puzzle(fio.read())}")
+        input = fio.read()
+    print(f"Part1 answer is: {part1(input)}")
+    print(f"Part2 answer is: {part2(input)}")
 
 
 class TestSolution(unittest.TestCase):
@@ -79,9 +120,9 @@ egadfb cdbfeg cegd fecab cgb gbdefca cg fgcdab egfdb bfceg | gbdfcae bgc cg cgb
 gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce"""
 
     def test_part1(self):
-        self.assertEqual(solve_puzzle(self.SAMPLE), 26)
+        self.assertEqual(part1(self.SAMPLE), 26)
     def test_part2(self):
-        self.assertEqual(solve_puzzle(self.SAMPLE), 'SAMPLE_ANSWER')
+        self.assertEqual(part2(self.SAMPLE), 5353)
 
 
 if __name__ == '__main__':
