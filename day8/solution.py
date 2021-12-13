@@ -24,6 +24,8 @@ b    .  b    .  .    c  b    c  b    c
 
 """
 
+############## PART1 FUNCTIONS
+
 DIGIT_MAP = {
     0: "abcefg",
     1: "cf",
@@ -36,34 +38,6 @@ DIGIT_MAP = {
     8: "abcdefg",
     9: "abcdfg",
 }
-
-
-class SevenSegmentDisplay:
-    def __init__(self):
-        # q == None
-        self.segment1 = "q"
-        self.segment2 = "q"
-        self.segment3 = "q"
-        self.segment4 = "q"
-        self.segment5 = "q"
-        self.segment6 = "q"
-        self.segment7 = "q"
-
-    def is_complete(self):
-        """ Returns True if all segments has been set, 
-        which means they are no longer of value 'q' """
-        return all([getattr(self, f"segment{i}") != 'q' for i in range(1, 8)])
-
-    def __str__(self):
-        empty = " "
-        return f" {self.segment1 * 4} \n" \
-                f"{self.segment2}{empty * 4}{self.segment3}\n" \
-                f"{self.segment2}{empty * 4}{self.segment3}\n" \
-                f" {self.segment4 * 4} \n" \
-                f"{self.segment5}{empty * 4}{self.segment6}\n" \
-                f"{self.segment5}{empty * 4}{self.segment6}\n" \
-                f" {self.segment7 * 4} " \
-
 
 def lookup_unique_digit(code: str):
     matches = [k for k,v in DIGIT_MAP.items() if len(v) == len(code)]
@@ -85,7 +59,90 @@ def part1(input: str):
     return len(digits)
 
 
-def part2(input: str):
+
+######### PART2 FUNCTIONS
+
+def new_seven_segment_display():
+    return {
+    1: None,
+    2: None,
+    3: None,
+    4: None,
+    5: None,
+    6: None,
+    7: None,
+}
+
+def new_digit_map():
+    return {
+    0: None,
+    1: None,
+    2: None,
+    3: None,
+    4: None,
+    5: None,
+    6: None,
+    7: None,
+    8: None,
+    9: None,
+}
+
+
+def letters(sevent_segment_display_dict):
+    """ Returns the current letters of a seven segment display configuration """
+    return "".join([v for v in sevent_segment_display_dict.values() if v])
+
+
+def strip(string, characters):
+    """ Returns string, stripped of any occurance of chars in characters """
+    for character in characters:
+        string = string.replace(character, "")
+    return string
+
+
+def seven_segment_display_to_digit(sequence):
+    match sequence:
+        case [str(), str(), str(), None, str(), str(), str()]:
+            return 0
+        case [None, None, str(), None, None, str(), None]:
+            return 1
+        case [str(), None, str(), str(), str(), None, str()]:
+            return 2
+        case [str(), None, str(), str(), None, str(), str()]:
+            return 3
+        case [None, str(), str(), str(), None, str(), None]:
+            return 4
+        case [str(), str(), None, str(), None, str(), str()]:
+            return 5
+        case [str(), str(), None, str(), str(), str(), str()]:
+            return 6
+        case [str(), None, str(), None, None, str(), None]:
+            return 7
+        case [str(), str(), str(), str(), str(), str(), str()]:
+            return 8
+        case [str(), str(), str(), str(), None, str(), str()]:
+            return 9
+
+
+def to_str_or_n(value):
+    """ Returns str('n') if 'value' is None else str(value) """
+    return '.' if value is None else str(value)
+
+
+def print_seven_segment_display(sequence):
+    s1, s2, s3, s4, s5, s6, s7 = map(to_str_or_n, sequence)
+    empty = " "
+    print(f" {s1 * 4} \n" \
+            f"{s2}{empty * 4}{s3}\n" \
+            f"{s2}{empty * 4}{s3}\n" \
+            f" {s4 * 4} \n" \
+            f"{s5}{empty * 4}{s6}\n" \
+            f"{s5}{empty * 4}{s6}\n" \
+            f" {s7 * 4} ")
+
+
+
+def ____OLD__part2(input: str):
     lines = input.splitlines()
     digits = []
     for line in lines:
@@ -96,6 +153,118 @@ def part2(input: str):
         break
 
     return "NotSolved"
+
+
+
+
+
+def ______part2(input: str):
+    lines = input.splitlines()
+    digits = []
+    for line in lines:
+        print(line)
+        signal_patterns, digit_output = [v.split() for v in line.split('|')]
+        configuration = new_seven_segment_display()
+
+        for code in signal_patterns:
+            match len(code):
+                case 2:
+                    #### g=1, 3  f=2, 7
+                    # matched a 1
+                    configuration[3] = code[0]
+                    configuration[6] = code[1]
+                    print(configuration[3] + " " + configuration[6])
+                case 3:
+                    # matched a 7
+                    configuration[1] = code[0]
+                    configuration[3] = code[1]
+                    configuration[6] = code[2]
+                    print(configuration[1] + " " + configuration[3] + " " + configuration[6])
+                case 4:
+                    configuration[2] = code[0]
+                    configuration[3] = code[1]
+                    configuration[4] = code[2]
+                    configuration[6] = code[3]
+                    print(configuration[2] + " " + configuration[3] + " " + configuration[4] + " " + configuration[6])
+
+        print(configuration)
+        from collections import Counter
+        c = Counter(configuration.values())
+        print(f"Counter: {c}")
+        break
+    
+    return "No solved"
+
+
+korvdict = {
+
+}
+
+def part2(input: str):
+    def letters(sevent_segment_display_dict):
+        """ Returns the current letters of a seven segment display configuration """
+        return "".join([v for v in sevent_segment_display_dict.values() if v])
+    lines = input.splitlines()
+    digits = []
+    for line in lines:
+        print(line)
+        signal_patterns, digit_output = [v.split() for v in line.split('|')]
+        configuration = new_seven_segment_display()
+        digit_map = new_digit_map()
+
+        signal_patterns = sorted(signal_patterns, key=len)
+        pattern_groups = [list(g) for k, g in groupby(signal_patterns, key=len)][3]
+        for pattern in signal_patterns:
+            match len(pattern):
+                case 2:
+                    configuration[3] = pattern[0]
+                    configuration[6] = pattern[1]
+                    digit_map[1] = pattern
+                case 3:
+                    print(f"CASE3 PATTERN: {pattern} and stripping: {configuration}")
+                    configuration[1] = strip(pattern, letters(configuration))
+                    digit_map[7] = pattern
+                case 4:
+                    # Can't know for sure where in the config this goes yet.
+                    # But storing it for reference for upcoming cases
+                    print(f"CASE4 PATTERN: {pattern} and stripping: {configuration}")
+                    stripped = strip(pattern, letters(configuration))
+                    korvdict["kroken"] = stripped
+                    configuration[2] = stripped[0]
+                    configuration[4] = stripped[1]
+                    print(korvdict["kroken"])
+                    digit_map[4] = pattern
+                case 5:
+                    print(f"CASE5 PATTERN: {pattern} and stripping: {configuration}")
+                    stripped = strip(pattern, letters(configuration))
+                    print(stripped)
+                    if configuration[7] is None:
+                        if len(stripped) == 1:
+                            configuration[7] = stripped
+                        else:
+                            print(f"LEN: {len(stripped)} and stripped: {stripped}")
+                            print("####1111111############################################")
+                            print("BAAAAAAAAAAAAAAAD TIMES MATE")
+                    else:
+                        if len(stripped) == 1:
+                            configuration[5] = strip(stripped, letters(configuration))
+                        elif len(stripped) == 0:
+                            # previous go around already sorted 5
+                            pass
+                        else:
+                            print(f"LEN: {len(stripped)} and stripped: {stripped}")
+                            print("######222222222222##########################################")
+                            print("BAAAAAAAAAAAAAAAD TIMES MATE")
+
+        print(digit_map)
+        print(configuration)
+        print("&&&&&&&&&&&&&&&&&&&&&&")
+        
+    import code
+    code.interact(local=locals())
+    
+    return "No solved"
+
 
 
 def main():
@@ -121,8 +290,11 @@ gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce
 
     def test_part1(self):
         self.assertEqual(part1(self.SAMPLE), 26)
-    def test_part2(self):
-        self.assertEqual(part2(self.SAMPLE), 5353)
+    def Festtest_part2_1(self):
+        self.assertEqual(part2(self._SAMPLE), 5353)
+
+    def test_part2_2(self):
+        self.assertEqual(part2(self.SAMPLE), 61229)
 
 
 if __name__ == '__main__':
