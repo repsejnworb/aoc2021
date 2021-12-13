@@ -210,7 +210,7 @@ korvdict = {
 
 def part2(input: str):
     lines = input.splitlines()
-    digits = []
+    sum = 0
     for line in lines:
         print(line)
         signal_patterns, digit_output = [v.split() for v in line.split('|')]
@@ -237,9 +237,9 @@ def part2(input: str):
         pattern = pattern_groups[2][0]
         stripped = strip(pattern, letters(configuration))
         print(f"CASE4 PATTERN: {pattern} and stripping: {configuration} (and stripped: {stripped}")
-        #configuration["REMOVEME"] = stripped
-        configuration[2] = stripped[0]
-        configuration[4] = stripped[1]
+        configuration["REMOVEME"] = stripped
+        #configuration[2] = stripped[0]
+        #configuration[4] = stripped[1]
 
         # The next group of len(5) can yield digits 5, 2 or 3. But we
         # care about it giving us the segments 5 and 7 in our configuration.
@@ -254,21 +254,28 @@ def part2(input: str):
                 if configuration[7] is None:
                     if len(stripped) == 1:
                         configuration[7] = stripped
-                    else:
-                        print(f"LEN: {len(stripped)} and stripped: {stripped}")
-                        print("####1111111############################################")
-                        print("BAAAAAAAAAAAAAAAD TIMES MATE")
                 else:
                     if len(stripped) == 1:
                         configuration[5] = strip(stripped, letters(configuration))
-                    elif len(stripped) == 0:
-                        # previous go around already sorted 5
-                        pass
-                    else:
-                        print(f"LEN: {len(stripped)} and stripped: {stripped}")
-                        print("######222222222222##########################################")
-                        print("BAAAAAAAAAAAAAAAD TIMES MATE")
 
+
+        # Last step! The group of len(6) holds the key to finding out what letters
+        # really go into segment 2 and 4. The magic happens when we encounter
+        # the pattern for digit 0. This will be the one, when stripped, yields
+        # only one letter. That letter will tell us what segment 2 really is
+        # and allow us to know what segment 4 really is.
+        # Let the battle for segment 2 begin!
+        contestants = configuration["REMOVEME"]
+        del configuration["REMOVEME"]
+        for pattern in pattern_groups[4]:
+            stripped = strip(pattern, letters(configuration))
+            if len(stripped) == 1:
+                # WINNER!
+                configuration[2] = stripped
+                configuration[4] = strip(contestants, stripped)
+
+        # import code
+        # code.interact(local=locals())
 
         print(digit_map)
         print(configuration)
@@ -276,13 +283,12 @@ def part2(input: str):
         digits = []
         for digit in digit_output:
             digits.append(pattern_to_digit(digit, configuration))
-        print("".join(map(str, digits)))
+        sum += int("".join(map(str, digits)))
+        print(int("".join(map(str, digits))))
         print("€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€")
         
-    import code
-    code.interact(local=locals())
     
-    return "No solved"
+    return sum
 
 
 
