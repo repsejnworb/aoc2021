@@ -1,3 +1,4 @@
+import pathlib
 import unittest
 
 
@@ -6,7 +7,8 @@ def solve_puzzle(input: str):
 
 
 def main():
-    with open('./input.txt') as fio:
+    puzzle_input_path = pathlib.Path(__file__).parent.resolve() / "input.txt"
+    with puzzle_input_path.open() as fio:
         print(f"Answer is: {solve_puzzle(fio.read())}")
 
 
