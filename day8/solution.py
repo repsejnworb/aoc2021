@@ -219,13 +219,24 @@ bdfegc cbegaf gecbf dfcage bdacg ed bedf ced adcbefg gebcd | ed bcgafe cdgba cbg
 egadfb cdbfeg cegd fecab cgb gbdefca cg fgcdab egfdb bfceg | gbdfcae bgc cg cgb
 gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce"""
 
-    def test_part1(self):
+    def test_sample_part1(self):
         self.assertEqual(part1(self.SAMPLE), 26)
-    def test_part2_1(self):
+
+    def test_smallsample_part2_1(self):
         self.assertEqual(part2(self._SAMPLE), 5353)
 
-    def test_part2_2(self):
+    def test_sample_part2(self):
         self.assertEqual(part2(self.SAMPLE), 61229)
+
+    def test_puzzle_input_part1(self):
+        puzzle_input_path = pathlib.Path(__file__).parent.resolve() / "input.txt"
+        with puzzle_input_path.open() as fio:
+            self.assertEqual(part1(fio.read()), 318)
+
+    def test_puzzle_input_part2(self):
+        puzzle_input_path = pathlib.Path(__file__).parent.resolve() / "input.txt"
+        with puzzle_input_path.open() as fio:
+            self.assertEqual(part2(fio.read()), 996280)
 
 
 if __name__ == '__main__':
