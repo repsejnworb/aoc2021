@@ -80,20 +80,6 @@ def pattern_to_digit(pattern, configuration):
         ssd[segment] = letter
     return seven_segment_display_to_digit(ssd)
 
-def new_digit_map():
-    return {
-    0: None,
-    1: None,
-    2: None,
-    3: None,
-    4: None,
-    5: None,
-    6: None,
-    7: None,
-    8: None,
-    9: None,
-}
-
 
 def letters(sevent_segment_display_dict):
     """ Returns the current letters of a seven segment display configuration """
@@ -132,105 +118,23 @@ def seven_segment_display_to_digit(seven_segment_display):
     raise AssertionError(f"Unmatchable: {seven_segment_display}")
 
 
-def to_str_or_n(value):
-    """ Returns str('n') if 'value' is None else str(value) """
-    return '.' if value is None else str(value)
-
-
-def print_seven_segment_display(sequence):
-    s1, s2, s3, s4, s5, s6, s7 = map(to_str_or_n, sequence)
-    empty = " "
-    print(f" {s1 * 4} \n" \
-            f"{s2}{empty * 4}{s3}\n" \
-            f"{s2}{empty * 4}{s3}\n" \
-            f" {s4 * 4} \n" \
-            f"{s5}{empty * 4}{s6}\n" \
-            f"{s5}{empty * 4}{s6}\n" \
-            f" {s7 * 4} ")
-
-
-
-def ____OLD__part2(input: str):
-    lines = input.splitlines()
-    digits = []
-    for line in lines:
-        signal_patterns, digit_output = [v.split() for v in line.split('|')]
-        # find the code for '8'
-        config_code = [code for code in itertools.chain(signal_patterns, digit_output) if len(code) == 8][0]
-        print(config_code)
-        break
-
-    return "NotSolved"
-
-
-
-
-
-def ______part2(input: str):
-    lines = input.splitlines()
-    digits = []
-    for line in lines:
-        print(line)
-        signal_patterns, digit_output = [v.split() for v in line.split('|')]
-        configuration = new_seven_segment_display()
-
-        for code in signal_patterns:
-            match len(code):
-                case 2:
-                    #### g=1, 3  f=2, 7
-                    # matched a 1
-                    configuration[3] = code[0]
-                    configuration[6] = code[1]
-                    print(configuration[3] + " " + configuration[6])
-                case 3:
-                    # matched a 7
-                    configuration[1] = code[0]
-                    configuration[3] = code[1]
-                    configuration[6] = code[2]
-                    print(configuration[1] + " " + configuration[3] + " " + configuration[6])
-                case 4:
-                    configuration[2] = code[0]
-                    configuration[3] = code[1]
-                    configuration[4] = code[2]
-                    configuration[6] = code[3]
-                    print(configuration[2] + " " + configuration[3] + " " + configuration[4] + " " + configuration[6])
-
-        print(configuration)
-        from collections import Counter
-        c = Counter(configuration.values())
-        print(f"Counter: {c}")
-        break
-    
-    return "No solved"
-
-
-korvdict = {
-
-}
-
 def part2(input: str):
     lines = input.splitlines()
     sum = 0
     for line in lines:
-        print(line)
         signal_patterns, digit_output = [v.split() for v in line.split('|')]
         configuration = new_seven_segment_display()
-        digit_map = new_digit_map()
 
         signal_patterns = sorted(signal_patterns, key=len)
         pattern_groups = [list(g) for k, g in itertools.groupby(signal_patterns, key=len)]
 
         # 1 is free in the first group.
-        # FIXME FIXME THIS FUCKING ORDER ISNT FREE YE STOPID STOPID PERSON
         digit_1_pattern = pattern_groups[0][0]
-        #configuration[3] = digit_1_pattern[0]
-        #configuration[6] = digit_1_pattern[1]
         configuration["BASE"] = digit_1_pattern
         
         # 7 is also nearly free in second group, minus digit_1_pattern
         # or rather, what is already stored in our configuration.
         digit_7_pattern = pattern_groups[1][0]
-        print(f"CASE3 PATTERN: {digit_7_pattern} and stripping: {configuration}")
         configuration[1] = strip(digit_7_pattern, letters(configuration))
 
         # 4 is also a freebie. Once stripped it yields to letters that
@@ -238,10 +142,7 @@ def part2(input: str):
         # we will store them in an extra key for stripping.
         pattern = pattern_groups[2][0]
         stripped = strip(pattern, letters(configuration))
-        print(f"CASE4 PATTERN: {pattern} and stripping: {configuration} (and stripped: {stripped}")
         configuration["REMOVEME"] = stripped
-        #configuration[2] = stripped[0]
-        #configuration[4] = stripped[1]
 
         # The next group of len(5) can yield digits 5, 2 or 3. But we
         # care about it giving us the segments 5 and 7 in our configuration.
@@ -252,7 +153,6 @@ def part2(input: str):
         while configuration[5] is None:
             for pattern in pattern_groups[3]:
                 stripped = strip(pattern, letters(configuration))
-                print(stripped)
                 if configuration[7] is None:
                     if len(stripped) == 1:
                         configuration[7] = stripped
@@ -290,22 +190,12 @@ def part2(input: str):
                 configuration[6] = stripped
                 configuration[3] = strip(contestants, stripped)
 
-        #import code
-        #code.interact(local=locals())
-
-        print(digit_map)
-        print(configuration)
-        print("&&&&&&&&&&&&&&&&&&&&&&")
         digits = []
         for digit in digit_output:
             digits.append(pattern_to_digit(digit, configuration))
         sum += int("".join(map(str, digits)))
-        print(int("".join(map(str, digits))))
-        print("€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€")
-        
     
     return sum
-
 
 
 def main():
@@ -331,7 +221,7 @@ gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce
 
     def test_part1(self):
         self.assertEqual(part1(self.SAMPLE), 26)
-    def Festtest_part2_1(self):
+    def test_part2_1(self):
         self.assertEqual(part2(self._SAMPLE), 5353)
 
     def test_part2_2(self):
